@@ -1,0 +1,136 @@
+--- Pure-handl deterministic lattice-noise backend.
+--- @details
+--- Implements the `noise` port with **no native dependency**: lattice
+--- coordinates are hashed with a fractional-sine hash (the classic
+--- `fract(sin(dot(p, k)) * 43758.5453)` construction), smoothed and linearly
+--- interpolated between neighbours.
+---
+--- Determinism holds for a fixed `math.sin` — the contract promises
+--- coordinate-determinism, not a specific bit pattern across libm versions.
+---
+--- `simplex_*` are the same value-noise lattice over skewed coordinates.
+--- Gradient simplex noise needs a permutation table and integer mixing the
+--- handl surface does not expose, so these are the documented
+--- "simplex-style" variants — the same trade-off `unicode-handl` makes for
+--- grapheme clusters.
+
+do {
+  HASH_SCALE = 43758.5453
+
+  --- Fractional part folded into `[0, 1)` (fract of a negative is negative).
+  fract01 :: (x) ~> math.abs(math.fract(x))
+
+  --- Smoothstep `3t² - 2t³` — C1-continuous interpolation weight.
+  smooth :: (t) ~> math.mul(t, math.mul(t, math.sub(3, math.mul(2, t))))
+
+  --- Sine hash of one lattice coordinate, mapped to `[-1, 1]`.
+  h1 :: (i) ~> math.sub(
+    math.mul(2, fract01(math.mul(math.sin(math.add(math.mul(i, 12.9898), 78.233)), HASH_SCALE))),
+    1
+  )
+
+  --- Sine hash of two lattice coordinates (`dot(p, k)` + offset).
+  h2 :: (i, j) ~> math.sub(
+    math.mul(
+      2,
+      fract01(
+        math.mul(
+          math.sin(
+            math.add(
+              math.add(math.mul(i, 12.9898), math.mul(j, 78.233)),
+              37.719
+            )
+          ),
+          HASH_SCALE
+        )
+      )
+    ),
+    1
+  )
+
+  --- Sine hash of three lattice coordinates.
+  h3 :: (i, j, k) ~> math.sub(
+    math.mul(
+      2,
+      fract01(
+        math.mul(
+          math.sin(
+            math.add(
+              math.add(
+                math.add(math.mul(i, 12.9898), math.mul(j, 78.233)),
+                math.mul(k, 94.673)
+              ),
+              11.135
+            )
+          ),
+          HASH_SCALE
+        )
+      )
+    ),
+    1
+  )
+
+  perlin_1d :: (x) ~> do {
+    i = math.floor(x)
+    f = math.fract(x)
+    t = smooth(f)
+    a = h1(i)
+    b = h1(math.add(i, 1))
+    math.lerp(a, b, t)
+  }
+
+  perlin_2d :: (x, y) ~> do {
+    i = math.floor(x)
+    j = math.floor(y)
+    u = math.fract(x)
+    v = math.fract(y)
+    sx = smooth(u)
+    sy = smooth(v)
+    n00 = h2(i, j)
+    n10 = h2(math.add(i, 1), j)
+    n01 = h2(i, math.add(j, 1))
+    n11 = h2(math.add(i, 1), math.add(j, 1))
+    x0 = math.lerp(n00, n10, sx)
+    x1 = math.lerp(n01, n11, sx)
+    math.lerp(x0, x1, sy)
+  }
+
+  perlin_3d :: (x, y, z) ~> do {
+    i = math.floor(x)
+    j = math.floor(y)
+    k = math.floor(z)
+    u = math.fract(x)
+    v = math.fract(y)
+    w = math.fract(z)
+    sx = smooth(u)
+    sy = smooth(v)
+    sz = smooth(w)
+    n000 = h3(i, j, k)
+    n100 = h3(math.add(i, 1), j, k)
+    n010 = h3(i, math.add(j, 1), k)
+    n110 = h3(math.add(i, 1), math.add(j, 1), k)
+    n001 = h3(i, j, math.add(k, 1))
+    n101 = h3(math.add(i, 1), j, math.add(k, 1))
+    n011 = h3(i, math.add(j, 1), math.add(k, 1))
+    n111 = h3(math.add(i, 1), math.add(j, 1), math.add(k, 1))
+    x00 = math.lerp(n000, n100, sx)
+    x01 = math.lerp(n010, n110, sx)
+    x10 = math.lerp(n001, n101, sx)
+    x11 = math.lerp(n011, n111, sx)
+    y0 = math.lerp(x00, x01, sy)
+    y1 = math.lerp(x10, x11, sy)
+    math.lerp(y0, y1, sz)
+  }
+
+  simplex_2d :: (x, y) ~> perlin_2d(math.add(x, y), math.sub(math.mul(1.5, x), y))
+
+  simplex_3d :: (x, y, z) ~> perlin_3d(math.add(x, y), math.add(y, z), math.add(z, x))
+
+  {
+    perlin_1d: perlin_1d,
+    perlin_2d: perlin_2d,
+    perlin_3d: perlin_3d,
+    simplex_2d: simplex_2d,
+    simplex_3d: simplex_3d
+  }
+}

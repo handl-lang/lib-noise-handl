@@ -1,0 +1,34 @@
+from "./index" import * as noise
+
+-- Determinism: the same coordinate always yields the same value.
+test_perlin_1d_is_deterministic := assert noise.perlin_1d(0.37) = noise.perlin_1d(0.37)
+
+test_perlin_2d_is_deterministic := assert noise.perlin_2d(0.37, 1.21) = noise.perlin_2d(0.37, 1.21)
+
+test_perlin_3d_is_deterministic := assert noise.perlin_3d(0.37, 1.21, 2.5) = noise.perlin_3d(0.37, 1.21, 2.5)
+
+test_simplex_2d_is_deterministic := assert noise.simplex_2d(0.37, 1.21) = noise.simplex_2d(0.37, 1.21)
+
+test_simplex_3d_is_deterministic := assert noise.simplex_3d(0.37, 1.21, 2.5) = noise.simplex_3d(0.37, 1.21, 2.5)
+
+-- Range: the contract is a value in [-1, 1].
+test_perlin_1d_range := assert math.abs(noise.perlin_1d(-3.7)) <= 1
+
+test_perlin_2d_range := assert math.abs(noise.perlin_2d(-3.7, 8.25)) <= 1
+
+test_perlin_3d_range := assert math.abs(noise.perlin_3d(-3.7, 8.25, 0.125)) <= 1
+
+test_simplex_2d_range := assert math.abs(noise.simplex_2d(4.5, -2.25)) <= 1
+
+test_simplex_3d_range := assert math.abs(noise.simplex_3d(4.5, -2.25, 7.75)) <= 1
+
+-- Coordinate sensitivity: distant inputs give different values.
+test_perlin_1d_varies := assert noise.perlin_1d(0.2) != noise.perlin_1d(0.7)
+
+test_perlin_2d_varies := assert noise.perlin_2d(0.2, 0.3) != noise.perlin_2d(0.7, 0.9)
+
+test_perlin_3d_varies := assert noise.perlin_3d(0.2, 0.3, 0.4) != noise.perlin_3d(0.7, 0.9, 1.1)
+
+-- Continuity: neighbouring samples within one lattice cell stay close.
+test_perlin_1d_is_continuous :=
+  assert math.abs(noise.perlin_1d(0.5) - noise.perlin_1d(0.5001)) < 0.01
