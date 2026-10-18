@@ -1,0 +1,5 @@
+[dependencies]
+noise = { path = "../lib-noise/src" }
+
+# own package
+noise-handl = { path = "src" }
