@@ -2,25 +2,20 @@
 
 Pure-handl implementation of the `noise` ports.
 
-Part of the `handl-lang` org split (ADR-0128). This repo is a **skeleton**:
-the layout and gate are in place, the implementation has not landed yet.
-
 ## Layout
 
 ```text
-src/        the .hnl sources (empty until the implementation lands)
-pkg.hnl     dependencies, when any: `{ deps: { <name>: "branch:<ref>" } }`
+src/index.hnl       the implementation
+src/index.test.hnl  the .hnl test suite
+pkg.hnl             package manifest — modules, deps, description, license
+ci.sh               bupha entry → scripts/hnl-gate.sh
 ```
-
-Dependencies: noise
 
 ## Gate
 
 ```bash
 HNL=../host-cli/target/debug/hnl scripts/hnl-gate.sh
 ```
-
-CI skips the gate while `src/` has no `.hnl` sources.
 
 ## License
 
