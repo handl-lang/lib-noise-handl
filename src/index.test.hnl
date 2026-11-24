@@ -1,15 +1,15 @@
 from "./index" import * as noise
 
 -- Determinism: the same coordinate always yields the same value.
-test_perlin_1d_is_deterministic := assert noise.perlin_1d(0.37) = noise.perlin_1d(0.37)
+test_perlin_1d_is_deterministic := assert noise.perlin_1d(0.37) == noise.perlin_1d(0.37)
 
-test_perlin_2d_is_deterministic := assert noise.perlin_2d(0.37, 1.21) = noise.perlin_2d(0.37, 1.21)
+test_perlin_2d_is_deterministic := assert noise.perlin_2d(0.37, 1.21) == noise.perlin_2d(0.37, 1.21)
 
-test_perlin_3d_is_deterministic := assert noise.perlin_3d(0.37, 1.21, 2.5) = noise.perlin_3d(0.37, 1.21, 2.5)
+test_perlin_3d_is_deterministic := assert noise.perlin_3d(0.37, 1.21, 2.5) == noise.perlin_3d(0.37, 1.21, 2.5)
 
-test_simplex_2d_is_deterministic := assert noise.simplex_2d(0.37, 1.21) = noise.simplex_2d(0.37, 1.21)
+test_simplex_2d_is_deterministic := assert noise.simplex_2d(0.37, 1.21) == noise.simplex_2d(0.37, 1.21)
 
-test_simplex_3d_is_deterministic := assert noise.simplex_3d(0.37, 1.21, 2.5) = noise.simplex_3d(0.37, 1.21, 2.5)
+test_simplex_3d_is_deterministic := assert noise.simplex_3d(0.37, 1.21, 2.5) == noise.simplex_3d(0.37, 1.21, 2.5)
 
 -- Range: the contract is a value in [-1, 1].
 test_perlin_1d_range := assert math.abs(noise.perlin_1d(-3.7)) <= 1
