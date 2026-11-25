@@ -1,3 +1,3 @@
 -- lib-noise-handl: modules this package provides (entry defaults to
 -- src/index.hnl; N modules resolve to src/<name>/index.hnl).
-{ deps: { noise: "branch:main" }, modules: ["noise-handl"], description: "Pure-handl implementation of the noise ports.", license: "MIT" }
+{ deps: { noise: "branch:main" }, modules: ["noise-handl"], name: "noise-handl", description: "Pure-handl implementation of the noise ports.", license: "MIT" }
