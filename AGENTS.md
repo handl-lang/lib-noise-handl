@@ -1,3 +1,30 @@
+# lib-noise-handl
+
+Pure-handl implementation of the `noise` ports.
+
+## Layout
+
+| path | role |
+| --- | --- |
+| `src/index.hnl` | the implementation |
+| `src/index.test.hnl` | the .hnl test suite |
+| `pkg.hnl` | manifest — `modules: ["noise-handl"]`, dep `noise` |
+| `scripts/hnl-gate.sh`, `ci.sh` | the gate / bupha entry |
+
+## Contract
+
+- Implements the `noise` contract (`lib-noise`) entirely in handl.
+
+## Verification
+
+```bash
+HNL=../host-cli/target/debug/hnl scripts/hnl-gate.sh
+```
+
+## License
+
+MIT.
+
 <!-- myco:agent-awareness -->
 
 ## Agent awareness
