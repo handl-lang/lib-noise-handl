@@ -9,7 +9,7 @@ Pure-handl implementation of the `noise` ports.
 | `src/index.hnl` | the implementation |
 | `src/index.test.hnl` | the .hnl test suite |
 | `pkg.hnl` | manifest — `modules: ["noise-handl"]`, dep `noise` |
-| `scripts/hnl-gate.sh`, `ci.sh` | the gate / bupha entry |
+| `scripts/hnl-gate.sh`, `workflows/gate.yaml` | the gate / bupha entry |
 
 ## Contract
 
