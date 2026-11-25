@@ -8,7 +8,7 @@ Pure-handl implementation of the `noise` ports.
 src/index.hnl       the implementation
 src/index.test.hnl  the .hnl test suite
 pkg.hnl             package manifest — modules, deps, description, license
-ci.sh               bupha entry → scripts/hnl-gate.sh
+workflows/gate.yaml               bupha entry (handl-gates) → scripts/hnl-gate.sh
 ```
 
 ## Gate
